@@ -22,16 +22,27 @@ class MySqlClient(object):
             self.db.commit()
             return True
 
+    # 增加代理分数
+    def increase(self, ip):
+        sql_get = "SELECT * FROM PROXY WHERE IP='%s'" % ip
+        self.cursor.execute(sql_get)
+        score = self.cursor.fetchone()[1]
+        if score and score < MAX_SCORE:
+            print('代理', ip, '当前分数', score, '加 10')
+            sql_increase = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score + 10, ip)
+            self.cursor.execute(sql_increase)
+            self.db.commit()
+
     # 减少代理分数
     def decrease(self, ip):
         sql_get = "SELECT * FROM PROXY WHERE IP='%s'" % ip
         self.cursor.execute(sql_get)
         score = self.cursor.fetchone()[1]
         if score and score > MIN_SCORE:
-            print('代理', ip, '当前分数', score, '减 10')
-            sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score-10, ip)
+            print('代理', ip, '当前分数', score, '减 20')
+            sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score - 20, ip)
         else:
-            print('代理', ip, '当前分数', score, '移除')
+            print('代理', ip, '当前分数', score, '剔除')
             sql_change = "DELETE FROM PROXY WHERE IP = '%s'" % ip
         self.cursor.execute(sql_change)
         self.db.commit()
@@ -77,5 +88,11 @@ class MySqlClient(object):
     # 批量获取
     def batch(self, start, stop):
         sql_batch = "SELECT * FROM PROXY LIMIT %s, %s" % (start, stop - start)
+        self.cursor.execute(sql_batch)
+        return self.cursor.fetchall()
+
+    # 批量获取稳定代理
+    def batch_pass_score(self):
+        sql_batch = "SELECT IP FROM PROXY WHERE SCORE>=%s ORDER BY SCORE DESC LIMIT 10" % PASS_SCORE
         self.cursor.execute(sql_batch)
         return self.cursor.fetchall()

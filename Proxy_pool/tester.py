@@ -3,8 +3,8 @@ import aiohttp
 import time
 import sys
 from aiohttp import ClientError
-from  Proxy_pool.db import MySqlClient
-from  Proxy_pool.setting import *
+from Proxy_pool.db import MySqlClient
+from Proxy_pool.setting import *
 
 
 class Tester(object):
@@ -26,7 +26,8 @@ class Tester(object):
                 print('正在测试', ip)
                 async with session.get(TEST_URL, proxy=real_ip, timeout=15, allow_redirects=False) as response:
                     if response.status in VALID_STATUS_CODES:
-                        self.mysql.max(ip)
+                        # 加分
+                        self.mysql.increase(ip)
                         print('代理可用', ip)
                     else:
                         self.mysql.decrease(ip)

@@ -36,14 +36,14 @@ class Scheduler():
     
     def run(self):
         print('代理池开始运行')
+
+        if GETTER_ENABLED:
+            getter_process = Process(target=self.schedule_getter)
+            getter_process.start()
         
         if TESTER_ENABLED:
             tester_process = Process(target=self.schedule_tester)
             tester_process.start()
-        
-        if GETTER_ENABLED:
-            getter_process = Process(target=self.schedule_getter)
-            getter_process.start()
         
         if API_ENABLED:
             api_process = Process(target=self.schedule_api)
