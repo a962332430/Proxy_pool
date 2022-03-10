@@ -4,9 +4,9 @@ HOST = '127.0.0.1'
 MYSQL_PORT = 3306
 # MySQl用户名、密码
 MYSQL_USERNAME = 'root'
-MYSQL_PASSWORD = 'steven1999'
+MYSQL_PASSWORD = '123456'
 # 数据库名
-SQL_NAME = 'test'
+SQL_NAME = 'qt_test'
 
 # 代理等级
 MAX_SCORE = 30

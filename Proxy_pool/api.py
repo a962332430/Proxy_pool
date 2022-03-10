@@ -1,5 +1,5 @@
 from flask import Flask, g
-from  Proxy_pool.db import MySqlClient
+from Proxy_pool.db import MySqlClient
 
 __all__ = ['app']
 

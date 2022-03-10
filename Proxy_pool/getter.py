@@ -1,7 +1,8 @@
-from  Proxy_pool.crawler import Crawler
-from  Proxy_pool.db import MySqlClient
-from  Proxy_pool.setting import *
+from Proxy_pool.crawler import Crawler
+from Proxy_pool.db import MySqlClient
+from Proxy_pool.setting import *
 import sys
+
 
 class Getter():
     def __init__(self):
@@ -16,7 +17,7 @@ class Getter():
             return True
         else:
             return False
-    
+
     def run(self):
         print('获取器开始执行')
         if not self.is_over_threshold():
