@@ -29,7 +29,7 @@ class MySqlClient(object):
         score = self.cursor.fetchone()[1]
         if score and score > MIN_SCORE:
             print('代理', ip, '当前分数', score, '减 1')
-            sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score-1, ip)
+            sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score-5, ip)
         else:
             print('代理', ip, '当前分数', score, '移除')
             sql_change = "DELETE FROM PROXY WHERE IP = '%s'" % ip

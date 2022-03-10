@@ -1,5 +1,6 @@
 # Proxy_pool
-
+`https://github.com/a962332430/Proxy_pool`
+``https://blog.csdn.net/weixin_44613063/article/details/102538757``
 ### 安装MySQL
 
 安装好之后将MySQL服务开启
