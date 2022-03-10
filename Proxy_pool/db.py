@@ -32,7 +32,7 @@ class MySqlClient(object):
             sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score-1, ip)
         else:
             print('代理', ip, '当前分数', score, '移除')
-            sql_change = "DELETE FROM PROXY WHERE IP = %s" % ip
+            sql_change = "DELETE FROM PROXY WHERE IP = '%s'" % ip
         self.cursor.execute(sql_change)
         self.db.commit()
 
