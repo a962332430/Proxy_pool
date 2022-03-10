@@ -24,7 +24,7 @@ class MySqlClient(object):
 
     # 减少代理分数
     def decrease(self, ip):
-        sql_get = "SELECT * FROM PROXY WHERE IP='%s'" % (ip)
+        sql_get = "SELECT * FROM PROXY WHERE IP='%s'" % ip
         self.cursor.execute(sql_get)
         score = self.cursor.fetchone()[1]
         if score and score > MIN_SCORE:
@@ -32,7 +32,7 @@ class MySqlClient(object):
             sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score-1, ip)
         else:
             print('代理', ip, '当前分数', score, '移除')
-            sql_change = "DELETE FROM PROXY WHERE IP = %s" % (ip)
+            sql_change = "DELETE FROM PROXY WHERE IP = %s" % ip
         self.cursor.execute(sql_change)
         self.db.commit()
 
@@ -46,7 +46,7 @@ class MySqlClient(object):
     # 随机获取有效代理
     def random(self):
         # 先从满分中随机选一个
-        sql_max = "SELECT * FROM PROXY WHERE SCORE=%s" % (MAX_SCORE)
+        sql_max = "SELECT * FROM PROXY WHERE SCORE=%s" % MAX_SCORE
         if self.cursor.execute(sql_max):
             results = self.cursor.fetchall()
             return choice(results)[0]

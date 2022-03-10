@@ -22,7 +22,7 @@ class Tester(object):
             try:
                 if isinstance(ip, bytes):
                     ip = ip.decode('utf-8')
-                real_ip = 'http://' + ip
+                real_ip = 'http://' + str(ip)
                 print('正在测试', ip)
                 async with session.get(TEST_URL, proxy=real_ip, timeout=15, allow_redirects=False) as response:
                     if response.status in VALID_STATUS_CODES:
