@@ -1,4 +1,5 @@
 import requests
+import time
 from requests.exceptions import ConnectionError
 
 base_headers = {
@@ -6,6 +7,10 @@ base_headers = {
     'Accept-Encoding': 'gzip, deflate, sdch',
     'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7'
 }
+
+
+def get_current_time():
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
 def get_page(url, options={}):

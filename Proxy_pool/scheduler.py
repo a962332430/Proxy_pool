@@ -5,6 +5,7 @@ from Proxy_pool.getter import Getter
 from Proxy_pool.tester import Tester
 from Proxy_pool.db import MySqlClient
 from Proxy_pool.setting import *
+from Proxy_pool.utils import get_current_time
 
 
 class Scheduler():
@@ -14,7 +15,7 @@ class Scheduler():
         """
         tester = Tester()
         while True:
-            print('测试器开始运行')
+            print('[%s], 测试器开始运行' % get_current_time())
             tester.run()
             time.sleep(cycle)
     
@@ -24,7 +25,7 @@ class Scheduler():
         """
         getter = Getter()
         while True:
-            print('开始抓取代理')
+            print('[%s], 开始抓取代理' % get_current_time())
             getter.run()
             time.sleep(cycle)
     

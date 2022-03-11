@@ -10,7 +10,8 @@ def main():
     try:
         s = Scheduler()
         s.run()
-    except:
+    except Exception as e:
+        print('main exec error, %s' % e)
         main()
 
 
