@@ -6,7 +6,13 @@ import json
 import random
 import urllib
 import urllib.request
+
+import re
+import requests
+from bs4 import BeautifulSoup
+
 from Proxy_pool.db import MySqlClient
+from Proxy_pool.utils import dict2obj
 
 
 def try_random_Proxy(proxy_list, retry):
@@ -56,7 +62,6 @@ def try_ordered_Proxy(proxy):
 
 
 def proxy_select():
-    proxy_list = []
     conn = MySqlClient()
     count = conn.count()
     print("count:" + str(count))
@@ -77,6 +82,73 @@ def proxy_select():
         return None
 
 
+# python 3.8(urllib, urllib.requests)
+
+my_headers = [
+    "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36"
+]
+
+
+def getHtml(url):
+    random_head = random.choice(my_headers)
+    kv = {
+        'User-Agent': random_head
+    }
+    html = None
+    try:
+        proxy_ip = proxy_select()
+        if proxy_ip:
+            print('choice_ip: %s' % proxy_ip)
+            httpProxyHandler = urllib.request.ProxyHandler(proxy_ip)
+            opener = urllib.request.build_opener(httpProxyHandler)
+            request = urllib.request.Request(url)
+            response = opener.open(request, timeout=5)
+            html_dict = {'text': response.read().decode("utf-8"), 'status_code': 200}
+            html = dict2obj(html_dict)
+    except Exception as e:
+        html = None
+        print("http proxy fail!, %s" % e)
+    if not html:
+        html = requests.Session().get(url=url, headers=kv, verify=False)
+    return html
+
+
+def parse_page(url):
+    html = getHtml(url)
+    soup = BeautifulSoup(html.text, 'html.parser')
+
+
+# python 2.7(urllib2,requests)
+#
+# my_headers = [
+#     "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",
+#     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36"
+# ]
+#
+#
+# def getHtml(url):
+#     random_head = random.choice(my_headers)
+#     kv = {
+#         'User-Agent': random_head
+#     }
+#     html = None
+#     try:
+#         proxy_ip = proxy_select()
+#         if proxy_ip:
+#             httpProxyHandler = urllib2.ProxyHandler(proxy_ip)
+#             opener = urllib2.build_opener(httpProxyHandler)
+#             response = opener.open(url, timeout=5)
+#             html_dict = {'text': response.read().decode("utf-8"), 'status_code': 200}
+#             html = dict2obj(html_dict)
+#     except Exception as e:
+#         html = None
+#         print("http proxy fail!")
+#     if not html:
+#         html = requests.Session().get(url=url, headers=kv, verify=False)
+#     return html
+
+
 if __name__ == '__main__':
-    selected_ip = proxy_select()
-    print('choice_ip: %s' % selected_ip)
+    parse_page("http://www.baidu.com")
+
