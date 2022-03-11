@@ -12,8 +12,8 @@ class MySqlClient(object):
         self.cursor = self.db.cursor()
 
     # 添加代理IP
-    def add(self, ip, score=INITIAL_SCORE):
-        sql_add = "INSERT INTO PROXY (IP,SCORE) VALUES ('%s', %s)" % (ip, score)
+    def add(self, ip, score=INITIAL_SCORE, survival=1):
+        sql_add = "INSERT INTO PROXY (IP,SCORE,SURVIVAL) VALUES ('%s', %s, %s)" % (ip, score, survival)
         if not re.match('\d+\.\d+\.\d+\.\d+\:\d+', ip):
             print('代理不符合规范', ip, '丢弃')
             return
@@ -26,10 +26,16 @@ class MySqlClient(object):
     def increase(self, ip):
         sql_get = "SELECT * FROM PROXY WHERE IP='%s'" % ip
         self.cursor.execute(sql_get)
-        score = self.cursor.fetchone()[1]
-        if score and score < MAX_SCORE:
-            print('代理', ip, '当前分数', score, '加 10')
-            sql_increase = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score + 10, ip)
+        record = self.cursor.fetchone()
+        score = record[1]
+        survival = record[2]
+        if score:
+            if score < MAX_SCORE:
+                print('代理', ip, '当前分数', score, '加 10', '已存活', survival, '轮')
+                sql_increase = "UPDATE PROXY SET SCORE = %s, SURVIVAL = %s WHERE IP = '%s'" % (score + 10, survival + 1, ip)
+            else:
+                print('代理', ip, '当前分数', score, '已满分', '已存活', survival, '轮')
+                sql_increase = "UPDATE PROXY SET SURVIVAL = %s WHERE IP = '%s'" % (survival + 1, ip)
             self.cursor.execute(sql_increase)
             self.db.commit()
 
@@ -37,10 +43,12 @@ class MySqlClient(object):
     def decrease(self, ip):
         sql_get = "SELECT * FROM PROXY WHERE IP='%s'" % ip
         self.cursor.execute(sql_get)
-        score = self.cursor.fetchone()[1]
+        record = self.cursor.fetchone()
+        score = record[1]
+        survival = record[2]
         if score and score > MIN_SCORE:
-            print('代理', ip, '当前分数', score, '减 20')
-            sql_change = "UPDATE PROXY SET SCORE = %s WHERE IP = '%s'" % (score - 20, ip)
+            print('代理', ip, '当前分数', score, '减 20', '已存活', survival, '轮')
+            sql_change = "UPDATE PROXY SET SCORE = %s, SURVIVAL = %s WHERE IP = '%s'" % (score - 20, ip, survival + 1)
         else:
             print('代理', ip, '当前分数', score, '剔除')
             sql_change = "DELETE FROM PROXY WHERE IP = '%s'" % ip
