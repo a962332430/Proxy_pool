@@ -48,7 +48,7 @@ class MySqlClient(object):
         survival = record[2]
         if score and score > MIN_SCORE:
             print('代理', ip, '当前分数', score, '减 20', '已存活', survival, '轮')
-            sql_change = "UPDATE PROXY SET SCORE = %s, SURVIVAL = %s WHERE IP = '%s'" % (score - 20, ip, survival + 1)
+            sql_change = "UPDATE PROXY SET SCORE = %s, SURVIVAL = %s WHERE IP = '%s'" % (score - 20, survival + 1, ip)
         else:
             print('代理', ip, '当前分数', score, '剔除')
             sql_change = "DELETE FROM PROXY WHERE IP = '%s'" % ip
@@ -101,8 +101,8 @@ class MySqlClient(object):
 
     # 批量获取稳定代理
     def get_pass_proxy_list(self):
-        # 先从满分中随机选一个
-        sql_max = "SELECT * FROM PROXY WHERE SCORE=%s" % MAX_SCORE
+        # 先从满分中挑选存活最久的10个
+        sql_max = "SELECT * FROM PROXY WHERE SCORE=%s ORDER BY SURVIVAL DESC LIMIT 10" % MAX_SCORE
         if self.cursor.execute(sql_max):
             results = self.cursor.fetchall()
         # 没有满分则随机选一个
