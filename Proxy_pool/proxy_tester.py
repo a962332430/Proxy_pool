@@ -9,11 +9,11 @@ import urllib.request
 from Proxy_pool.db import MySqlClient
 
 
-def randomTryProxy(proxy_list, retry):
-    '''
+def try_random_Proxy(proxy_list, retry):
+    """
         Function : choose a proxy from the proxy list RANDOMLY!
         retry : number of retry
-    '''
+    """
     # 策略 1 随机选
     try:
         proxy = random.choice(proxy_list)
@@ -31,14 +31,14 @@ def randomTryProxy(proxy_list, retry):
     except Exception as e:
         print('Connect error:Please retry, error: %s' % e)
         if retry > 0:
-            randomTryProxy(retry - 1)
+            try_random_Proxy(retry - 1)
 
 
-def inorderTryProxy(proxy):
-    '''
+def try_ordered_Proxy(proxy):
+    """
         Function : choose a proxy from the proxy list RANDOMLY!
         retry : index of proxy
-    '''
+    """
     # 策略 2 ：依次尝试选择
     try:
         proxy_obj = {'http': str(proxy)}
@@ -51,8 +51,8 @@ def inorderTryProxy(proxy):
 
         print('Worked !')
         return proxy_obj
-    except:
-        print('Connect error:Please retry')
+    except Exception as e:
+        print('[ORDERED select] Connect error : %s' % e)
 
 
 def proxy_select():
@@ -60,16 +60,16 @@ def proxy_select():
     conn = MySqlClient()
     count = conn.count()
     print("count:" + str(count))
-    proxy_list = conn.batch_pass_score()
+    proxy_list = conn.get_pass_proxy_list()
     if len(proxy_list) > 0:
         # 随机筛选适合代理列表中大部分能用的情况
-        choice_ip = randomTryProxy(proxy_list, 5)
+        choice_ip = try_random_Proxy(proxy_list, 5)
         if choice_ip:
             return choice_ip
         print('--' * 20)
         # 依次尝试适合代理列表中大部分不可用的情况
         for p in proxy_list:
-            choice_ip = inorderTryProxy(p)
+            choice_ip = try_ordered_Proxy(p)
             if choice_ip:
                 return choice_ip
     else:
@@ -80,5 +80,3 @@ def proxy_select():
 if __name__ == '__main__':
     selected_ip = proxy_select()
     print('choice_ip: %s' % selected_ip)
-
-

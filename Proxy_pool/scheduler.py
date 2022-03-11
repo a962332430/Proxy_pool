@@ -15,7 +15,7 @@ class Scheduler():
         """
         tester = Tester()
         while True:
-            print('[%s], 测试器开始运行' % get_current_time())
+            print('[%s] 开始测试代理：' % get_current_time())
             tester.run()
             time.sleep(cycle)
     
@@ -25,7 +25,7 @@ class Scheduler():
         """
         getter = Getter()
         while True:
-            print('[%s], 开始抓取代理' % get_current_time())
+            print('[%s] 开始抓取代理：' % get_current_time())
             getter.run()
             time.sleep(cycle)
     

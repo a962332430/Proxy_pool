@@ -5,6 +5,7 @@ import sys
 from aiohttp import ClientError
 from Proxy_pool.db import MySqlClient
 from Proxy_pool.setting import *
+from Proxy_pool.utils import get_current_time
 
 
 class Tester(object):
@@ -41,7 +42,7 @@ class Tester(object):
         测试主函数
         :return:
         """
-        print('测试器开始运行')
+        print('=====测试器开始运行=====')
         try:
             count = self.mysql.count()
             print('当前剩余', count, '个代理')
