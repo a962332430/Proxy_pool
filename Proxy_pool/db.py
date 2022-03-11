@@ -93,6 +93,13 @@ class MySqlClient(object):
 
     # 批量获取稳定代理
     def batch_pass_score(self):
-        sql_batch = "SELECT IP FROM PROXY WHERE SCORE>=%s ORDER BY SCORE DESC LIMIT 10" % PASS_SCORE
+        sql_batch = "SELECT * FROM PROXY WHERE SCORE>=%s ORDER BY SCORE DESC LIMIT 10" % PASS_SCORE
         self.cursor.execute(sql_batch)
-        return self.cursor.fetchall()
+        ip_group = self.cursor.fetchall()
+        proxy_list = []
+        if len(ip_group):
+            for ip_tuple in ip_group:
+                proxy_list.append(ip_tuple[0])
+        else:
+            proxy_list
+        return proxy_list
