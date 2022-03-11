@@ -87,3 +87,19 @@ class Crawler(object, metaclass=ProxyMetaclass):
                     for address, port in zip(re_ip_address, re_port):
                         address_port = address + ':' + port
                         yield address_port.replace(' ', '')
+
+    def crawl_seofangfa(self):
+        start_url = 'https://proxy.seofangfa.com/'
+        html = get_page(start_url)
+        if html:
+            find_tr = re.compile('<tr>(.*?)</tr>', re.S)
+            trs = find_tr.findall(html)
+            for index in range(1, len(trs)):
+                tr = trs[index].replace("\t", "").replace("\n", "").replace(" ", "")
+                find_ip = re.compile('<td>(\d+\.\d+\.\d+\.\d+)</td>')
+                re_ip_address = find_ip.findall(tr)
+                find_port = re.compile('<td>(\d+)</td>')
+                re_port = find_port.findall(tr)
+                for address, port in zip(re_ip_address, re_port):
+                    address_port = address + ':' + port
+                    yield address_port.replace(' ', '')
