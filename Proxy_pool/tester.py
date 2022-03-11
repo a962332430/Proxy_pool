@@ -42,7 +42,7 @@ class Tester(object):
         测试主函数
         :return:
         """
-        print('=====测试器开始运行=====')
+        print('=====测试器执行开始=====')
         try:
             count = self.mysql.count()
             print('当前剩余', count, '个代理')
@@ -58,3 +58,4 @@ class Tester(object):
                 time.sleep(5)
         except Exception as e:
             print('测试器发生错误', e.args)
+        print('=====测试器执行结束=====')

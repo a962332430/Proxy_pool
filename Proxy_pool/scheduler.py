@@ -43,9 +43,11 @@ class Scheduler():
             getter_process.start()
         
         if TESTER_ENABLED:
+            time.sleep(60)
             tester_process = Process(target=self.schedule_tester)
             tester_process.start()
         
         if API_ENABLED:
+            time.sleep(60)
             api_process = Process(target=self.schedule_api)
             api_process.start()

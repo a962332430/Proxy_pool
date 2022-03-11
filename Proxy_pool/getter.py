@@ -19,12 +19,16 @@ class Getter():
             return False
 
     def run(self):
-        print('=====获取器开始执行=====')
-        if not self.is_over_threshold():
-            for callback_label in range(self.crawler.__CrawlFuncCount__):
-                callback = self.crawler.__CrawlFunc__[callback_label]
-                # 获取代理
-                all_ip = self.crawler.get_proxies(callback)
-                sys.stdout.flush()
-                for ip in all_ip:
-                    self.mysql.add(ip)
+        print('=====获取器执行开始=====')
+        try:
+            if not self.is_over_threshold():
+                for callback_label in range(self.crawler.__CrawlFuncCount__):
+                    callback = self.crawler.__CrawlFunc__[callback_label]
+                    # 获取代理
+                    all_ip = self.crawler.get_proxies(callback)
+                    sys.stdout.flush()
+                    for ip in all_ip:
+                        self.mysql.add(ip)
+        except Exception as e:
+            print('获取器发生错误', e.args)
+        print('=====获取器执行结束=====')
